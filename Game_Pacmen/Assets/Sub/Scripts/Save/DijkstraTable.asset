@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef070e647919db4ea4df7e949b7795f, type: 3}
+  m_Name: DijkstraTable
+  m_EditorClassIdentifier: 
+  postRootINT_:
+  - rootObj_: 1
+    rootGoalObj_:
+    - goalRootObj_: 01000000
+    - goalRootObj_: 0100000002000000
+    - goalRootObj_: 010000000200000003000000
+    - goalRootObj_: 0100000004000000
+    - goalRootObj_: 0100000005000000
+    - goalRootObj_: 010000000400000006000000
+    - goalRootObj_: 010000000400000007000000
+    - goalRootObj_: 0100000008000000
+    - goalRootObj_: 010000000800000009000000
+  - rootObj_: 2
+    rootGoalObj_:
+    - goalRootObj_: 0200000001000000
+    - goalRootObj_: 02000000
+    - goalRootObj_: 0200000003000000
+    - goalRootObj_: 0200000004000000
+    - goalRootObj_: 020000000400000005000000
+    - goalRootObj_: 020000000400000006000000
+    - goalRootObj_: 020000000400000007000000
+    - goalRootObj_: 020000000100000008000000
+    - goalRootObj_: 02000000010000000800000009000000
+  - rootObj_: 3
+    rootGoalObj_:
+    - goalRootObj_: 030000000200000001000000
+    - goalRootObj_: 0300000002000000
+    - goalRootObj_: 03000000
+    - goalRootObj_: 030000000200000004000000
+    - goalRootObj_: 03000000020000000400000005000000
+    - goalRootObj_: 0300000006000000
+    - goalRootObj_: 0300000007000000
+    - goalRootObj_: 03000000020000000100000008000000
+    - goalRootObj_: 0300000002000000010000000800000009000000
+  - rootObj_: 4
+    rootGoalObj_:
+    - goalRootObj_: 0400000001000000
+    - goalRootObj_: 0400000002000000
+    - goalRootObj_: 040000000200000003000000
+    - goalRootObj_: 04000000
+    - goalRootObj_: 0400000005000000
+    - goalRootObj_: 0400000006000000
+    - goalRootObj_: 0400000007000000
+    - goalRootObj_: 040000000100000008000000
+    - goalRootObj_: 04000000010000000800000009000000
+  - rootObj_: 5
+    rootGoalObj_:
+    - goalRootObj_: 0500000001000000
+    - goalRootObj_: 050000000400000002000000
+    - goalRootObj_: 05000000040000000200000003000000
+    - goalRootObj_: 0500000004000000
+    - goalRootObj_: 05000000
+    - goalRootObj_: 050000000400000006000000
+    - goalRootObj_: 050000000400000007000000
+    - goalRootObj_: 050000000100000008000000
+    - goalRootObj_: 05000000010000000800000009000000
+  - rootObj_: 6
+    rootGoalObj_:
+    - goalRootObj_: 060000000400000001000000
+    - goalRootObj_: 060000000400000002000000
+    - goalRootObj_: 0600000003000000
+    - goalRootObj_: 0600000004000000
+    - goalRootObj_: 060000000400000005000000
+    - goalRootObj_: 06000000
+    - goalRootObj_: 0600000007000000
+    - goalRootObj_: 06000000040000000100000008000000
+    - goalRootObj_: 0600000004000000010000000800000009000000
+  - rootObj_: 7
+    rootGoalObj_:
+    - goalRootObj_: 070000000400000001000000
+    - goalRootObj_: 070000000400000002000000
+    - goalRootObj_: 0700000003000000
+    - goalRootObj_: 0700000004000000
+    - goalRootObj_: 070000000400000005000000
+    - goalRootObj_: 0700000006000000
+    - goalRootObj_: 07000000
+    - goalRootObj_: 07000000040000000100000008000000
+    - goalRootObj_: 0700000004000000010000000800000009000000
+  - rootObj_: 8
+    rootGoalObj_:
+    - goalRootObj_: 0800000001000000
+    - goalRootObj_: 080000000100000002000000
+    - goalRootObj_: 08000000010000000200000003000000
+    - goalRootObj_: 080000000100000004000000
+    - goalRootObj_: 080000000100000005000000
+    - goalRootObj_: 08000000010000000400000006000000
+    - goalRootObj_: 08000000010000000400000007000000
+    - goalRootObj_: 08000000
+    - goalRootObj_: 0800000009000000
+  - rootObj_: 9
+    rootGoalObj_:
+    - goalRootObj_: 090000000800000001000000
+    - goalRootObj_: 09000000080000000100000002000000
+    - goalRootObj_: 0900000008000000010000000200000003000000
+    - goalRootObj_: 09000000080000000100000004000000
+    - goalRootObj_: 09000000080000000100000005000000
+    - goalRootObj_: 0900000008000000010000000400000006000000
+    - goalRootObj_: 0900000008000000010000000400000007000000
+    - goalRootObj_: 0900000008000000
+    - goalRootObj_: 09000000

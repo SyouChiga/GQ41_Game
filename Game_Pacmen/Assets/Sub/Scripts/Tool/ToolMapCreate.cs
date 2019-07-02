@@ -241,15 +241,36 @@ namespace Game
                 window.fieldMaxX_ = ToolMapCreate.fieldX_;
                 window.fieldMaxY_ = ToolMapCreate.fieldY_;
                 window.field_ = new FIELD[window.fieldMaxX_, window.fieldMaxY_];
+                
                 parent_ = mapCreate;
                 window.minSize = new Vector2(300.0f, 300.0f);
                 window.InitField();
-
+                window.FieldInit();
                 window.fieldMaxX_ = ToolMapCreate.fieldX_;
                 window.fieldMaxY_ = ToolMapCreate.fieldY_;
                 return window;
 
            }
+
+            //フィールドの読み込み
+            private void FieldInit()
+            {
+                GameObject parentDungenObj = GameObject.Find("FieldObject/Dungeon");
+                //子供がいるかどうか
+                if (parentDungenObj.transform.childCount == 0) return;
+
+                Field[] chiledDungenObj = parentDungenObj.GetComponentsInChildren<Field>();
+
+
+
+                foreach(var chiled in chiledDungenObj)
+                {
+                    field_[chiled.toolPosX, chiled.toolPosY].type_ = chiled.type;
+                    field_[chiled.toolPosX, chiled.toolPosY].filePath_ = chiled.imgPath;
+                    field_[chiled.toolPosX, chiled.toolPosY].obj_ = chiled.gameObject;
+                    field_[chiled.toolPosX, chiled.toolPosY].objectpath_ = "FieldObject/Dungeon/" + chiled.name;
+                }
+            }
 
             //フィールドのパス
             private string fieldPath_ = "Assets/Sub/Prefab/Field";
@@ -265,6 +286,10 @@ namespace Game
             private string fieldEndOfRoaddPath_ = "/Field_EndOfRoad";
             //フィールドlist
             private List<GameObject> fieldObj_ = new List<GameObject>();
+
+            //Postのパス
+            private string postPath_ = "Assets/Sub/Prefab/Field/Post/post.prefab";
+
             //フィールド初期化
             private void InitField()
             {
@@ -433,7 +458,9 @@ namespace Game
                 field_[posX, posY].type_ = parent_.Type;
                 field_[posX, posY].filePath_ = parent_.SelectImagePath;
                 field_[posX, posY].obj_ = obj;
-
+                field_[posX, posY].obj_.GetComponent<Field>().toolPosX = posX;
+                field_[posX, posY].obj_.GetComponent<Field>().toolPosY = posY;
+                field_[posX, posY].obj_.GetComponent<Field>().imgPath = parent_.SelectImagePath;
 
             }
             
@@ -507,6 +534,33 @@ namespace Game
                 return y;
             }
 
+            private void CreateDijkstr()
+            {
+                GameObject parentDungenObj = GameObject.Find("Post");
+
+                GameObject obj = AssetDatabase.LoadAssetAtPath(postPath_, typeof(GameObject)) as GameObject;
+
+                int cntID = 1;
+                for (int cntX = 0; cntX < fieldMaxX_; cntX++)
+                {
+                    for (int cntY = 0; cntY < fieldMaxY_; cntY++)
+                    {
+                        if (field_[cntX, cntY].type_ == Field.FIELD_TYPE.FIELD_NONE) continue;
+
+                        GameObject localObject = field_[cntX, cntY].obj_;
+
+                        GameObject post = Instantiate(obj, localObject.transform.position, Quaternion.identity);
+
+                        Link link = post.GetComponent<Link>();
+
+                        link.LinkID = cntID;
+                        cntID++;
+                      
+                        post.transform.SetParent(parentDungenObj.transform);
+                    }
+                }
+            }
+
             private void OnGUI()
             {
                 Repaint();
@@ -515,7 +569,16 @@ namespace Game
                 DrawGird();
                 DrawTexture();
 
+                EditorGUILayout.BeginVertical();
 
+                GUILayout.FlexibleSpace();
+                //ダイクストラを設置
+                if (GUILayout.Button("Create editor"))
+                {
+                    CreateDijkstr();
+                }
+
+                EditorGUILayout.EndVertical();
             }
             
         }

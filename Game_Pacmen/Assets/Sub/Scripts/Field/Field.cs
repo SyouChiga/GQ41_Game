@@ -27,6 +27,9 @@ namespace Game
         FIELD_MAX
      }
      public FIELD_TYPE type;
+
+     public int toolPosX, toolPosY;
+     public string imgPath;
      // Start is called before the first frame update
      void Start()
      {

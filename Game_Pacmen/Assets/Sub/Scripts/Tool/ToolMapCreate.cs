@@ -222,6 +222,13 @@ namespace Game
                 public string filePath_;
                 public string objectpath_;
                 public GameObject obj_;
+                public Link link_;
+            }
+
+            struct INDEX
+            {
+                public int indexX;
+                public int indexY;
             }
             //親ウィンドウ
             static public ToolMapCreate parent_;
@@ -540,6 +547,7 @@ namespace Game
 
                 GameObject obj = AssetDatabase.LoadAssetAtPath(postPath_, typeof(GameObject)) as GameObject;
 
+
                 int cntID = 1;
                 for (int cntX = 0; cntX < fieldMaxX_; cntX++)
                 {
@@ -553,12 +561,320 @@ namespace Game
 
                         Link link = post.GetComponent<Link>();
 
+                        field_[cntX, cntY].link_ = link;
+
                         link.LinkID = cntID;
                         cntID++;
-                      
+
                         post.transform.SetParent(parentDungenObj.transform);
                     }
                 }
+
+                //link設定
+                for (int cntX = 0; cntX < fieldMaxX_; cntX++)
+                {
+                    for (int cntY = 0; cntY < fieldMaxY_; cntY++)
+                    {
+                        if (field_[cntX, cntY].type_ == Field.FIELD_TYPE.FIELD_NONE) continue;
+                        DijkstraFix(field_[cntX, cntY].type_, cntX, cntY);
+
+                    }
+                }
+            }
+
+            private void DijkstraLink(INDEX index,int indexX,int indexY)
+            {
+                if (field_[indexX, indexY].link_.LinkObject.Length == 0)
+                {
+                    GameObject[] objs = new GameObject[1];
+
+                    objs[0] = field_[index.indexX, index.indexY].link_.gameObject;
+
+                    field_[indexX, indexY].link_.LinkObject = objs;
+                }
+                else
+                {
+                    GameObject[] objs = new GameObject[field_[indexX, indexY].link_.LinkObject.Length + 1];
+
+                    if (index.indexX == -1 || index.indexY == -1) return;
+
+                    int cnt = 0;
+                    foreach (var links in field_[indexX, indexY].link_.LinkObject)
+                    {
+                        objs[cnt] = links;
+                        cnt++;
+                    }
+
+                    objs[cnt] = field_[index.indexX, index.indexY].link_.gameObject;
+                    field_[indexX, indexY].link_.LinkObject = objs;
+                }
+
+            }
+
+            private void DijkstraFix(Field.FIELD_TYPE type,int indexX,int indexY)
+            {
+                INDEX index;
+                index.indexX = 0;
+                index.indexY = 0;
+                switch (type)
+                {
+                    case Field.FIELD_TYPE.FIELD_CONVEX_DOWN:
+                        //右
+                        if(indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CONVEX_LEFT:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CONVEX_RIGHT:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CONVEX_UP:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORNER_LEFTDOWN:
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORNER_LEFTUP:
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORNER_RIGHTDOWN:
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORNER_RIGHTUP:
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORRIDOR_LEFTRIGHT:
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CORRIDOR_UPDOWN:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_CROSSROAD:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_ENDOFROAD_DOWN:
+                        //下
+                        if (indexY + 1 < fieldMaxY_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, 1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_ENDOFROAD_LEFT:
+                        //左
+                        if (indexX - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, -1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_ENDOFROAD_RIGHT:
+                        //右
+                        if (indexX + 1 < fieldMaxX_)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 1, 0);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                    case Field.FIELD_TYPE.FIELD_ENDOFROAD_UP:
+                        //上
+                        if (indexY - 1 >= 0)
+                        {
+                            index = GetNextDijkStra(indexX, indexY, 0, -1);
+                            DijkstraLink(index, indexX, indexY);
+                        }
+                        break;
+                }
+
+                
+            }
+
+            private INDEX GetNextDijkStra(int indexX,int indexY,int addIndexX,int addIndexY)
+            {
+                INDEX returnIndex;
+
+                int signX = System.Math.Sign(addIndexX);
+                int signY = System.Math.Sign(addIndexY);
+
+                if (signX == 1)
+                {
+                    if (indexX + addIndexX >= fieldMaxX_) returnIndex.indexX = -1;
+                    else returnIndex.indexX = indexX + addIndexX;
+                }
+                else
+                {
+                    if (indexX + addIndexX < 0) returnIndex.indexX = -1;
+                    else returnIndex.indexX = indexX + addIndexX;
+                }
+
+                if (signY == 1)
+                {
+                    if (indexY + addIndexY >= fieldMaxY_) returnIndex.indexY = -1;
+                    else returnIndex.indexY = indexY + addIndexY;
+                }
+                else
+                {
+                    if (indexY + addIndexY < 0) returnIndex.indexY = -1;
+                    else returnIndex.indexY = indexY + addIndexY;
+                }
+
+                return returnIndex;
             }
 
             private void OnGUI()
